@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Food Quiz</title>
+    <style>
+        body {
+            background: white;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 30px;
+        }
+        h1 {
+            color: #333;
+        }
+        .food {
+            font-size: 24px;
+            color: blue;
+            margin: 10px;
+        }
+        .nutrition {
+            font-size: 20px;
+            margin: 20px 0;
+        }
+        .buttons button {
+            margin: 10px;
+            padding: 10px 20px;
+            font-size: 18px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+        }
+        .correct {
+            color: green;
+            font-size: 22px;
+            margin-top: 20px;
+        }
+        .incorrect {
+            color: red;
+            font-size: 22px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>🍔 Food Quiz 🍕</h1>
+
+    <div class="food" id="food1">Food 1</div>
+    <div>VS</div>
+    <div class="food" id="food2">Food 2</div>
+
+    <div class="nutrition" id="nutrition">Which one has more: ???</div>
+
+    <div class="buttons">
+        <button onclick="choose('left')" id="btnLeft">Food 1</button>
+        <button onclick="choose('equal')">Roughly Equal</button>
+        <button onclick="choose('right')" id="btnRight">Food 2</button>
+    </div>
+
+    <div id="result"></div>
+
+    <script>
+        // Sample food data (similar to your data.txt)
+        const foods = [
+            {"name": "Bhat", "calories": 23, "fat": 43, "protein": 54, "carbohydrates": 65, "sodium": 67, "cholestrol": 12},
+            {"name": "Khir", "calories": 34, "fat": 54, "protein": 65, "carbohydrates": 54, "sodium": 34, "cholestrol": 23},
+            {"name": "MoMo", "calories": 76, "fat": 76, "protein": 54, "carbohydrates": 44, "sodium": 33, "cholestrol": 55},
+            {"name": "Pizza", "calories": 11, "fat": 99, "protein": 56, "carbohydrates": 67, "sodium": 63, "cholestrol": 26},
+            {"name": "Pop", "calories": 77, "fat": 66, "protein": 55, "carbohydrates": 44, "sodium": 55, "cholestrol": 65}
+        ];
+
+        const components = ['calories', 'fat', 'protein', 'carbohydrates', 'sodium', 'cholestrol'];
+
+        let currentFood1, currentFood2, currentKey;
+
+        function newQuestion() {
+            const index1 = Math.floor(Math.random() * foods.length);
+            let index2 = Math.floor(Math.random() * foods.length);
+            while (index2 === index1) {  // make sure foods are different
+                index2 = Math.floor(Math.random() * foods.length);
+            }
+
+            currentFood1 = foods[index1];
+            currentFood2 = foods[index2];
+            currentKey = components[Math.floor(Math.random() * components.length)];
+
+            document.getElementById('food1').innerText = currentFood1.name;
+            document.getElementById('food2').innerText = currentFood2.name;
+            document.getElementById('btnLeft').innerText = currentFood1.name;
+            document.getElementById('btnRight').innerText = currentFood2.name;
+            document.getElementById('nutrition').innerText = `Which one has more: ${currentKey.toUpperCase()}`;
+            document.getElementById('result').innerText = '';
+        }
+
+        function choose(selection) {
+            const val1 = currentFood1[currentKey];
+            const val2 = currentFood2[currentKey];
+            let correct = false;
+
+            if (selection === 'left') {
+                correct = val1 > val2;
+            } else if (selection === 'right') {
+                correct = val2 > val1;
+            } else if (selection === 'equal') {
+                correct = Math.abs(val1 - val2) < (val1 / 10); // within 10%
+            }
+
+            if (correct) {
+                document.getElementById('result').innerHTML = '<div class="correct">✅ Correct!</div>';
+            } else {
+                document.getElementById('result').innerHTML = '<div class="incorrect">❌ Incorrect!</div>';
+            }
+
+            setTimeout(newQuestion, 1500); // New question after 1.5 seconds
+        }
+
+        newQuestion(); // start the first question
+    </script>
+
+</body>
+</html>
